@@ -1,22 +1,120 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+
+struct frame_bit {
+	int temp;
+	int bit : 2;
+};
 
 //reading the input.txt file
 void readInput(int *frames, int *pages, int *referenceString){
 	char ch;
+	char buf[100];
 	int page = 0;
-	FILE *fp = fopen("input.txt", "r");
+	char *fname = (char*) calloc(200,sizeof(char));
+	printf("FILE NAME : ");
+	scanf("%s",fname);
+	FILE *fp = fopen(fname, "r");
+
 	ch = fgetc(fp);
 	*frames = atoi(&ch);
-	while((ch = fgetc(fp)) != EOF)
+
+	fgetc(fp); // no Enter
+
+	fgets(buf, sizeof(buf), fp);
+	char *str = strtok(buf, " ");
+
+	while(str != NULL)
 	{
-		if((ch != ' ')&&(ch != '\n')){
-			referenceString[page] = atoi(&ch);
-			page++;
-		}
+		referenceString[page] = atoi(str);
+		page++;
+		str = strtok(NULL, " ");
 	}
 	*pages = page;
+
 	fclose(fp);
+	free(fname);
+}
+
+int second_chance_page(int frames, int pages, int *referenceString){
+	struct frame_bit fb[frames];
+	int pageFaults = 0, m, n, s, point = 0;
+	char fault;
+
+	printf("Used method : Second-Chance\n");
+	printf("page reference string : ");
+	for(int m = 0; m < pages; m++)
+      	{
+           printf("%d ", referenceString[m]);
+      	}
+	printf("\n\n");
+	printf("\tframe   ");
+	for(int m = 1; m<=frames;m++){
+		printf("%d\t",m);
+	}
+	printf("page fault\ntime\n");
+
+	for(m = 0; m < frames; m++)
+      {
+            fb[m].temp = -1;
+	    fb[m].bit = 0;
+      }
+      for(m = 0; m < pages; m++)
+      {
+            s = 0;
+	    fault = 'F';
+            for(n = 0; n < frames; n++)
+            {
+                  if(referenceString[m] == fb[n].temp)
+                  {
+                        s++;
+                        pageFaults--;
+			fault = ' ';
+			fb[n].bit = 1;
+                  }
+            }
+            pageFaults++;
+            if((pageFaults <= frames) && (s == 0))
+            {
+                  fb[pageFaults-1].temp = referenceString[m];
+		  fb[pageFaults-1].bit = 0;
+            }
+            else if(s == 0)
+            {
+		    if(point == 0) point = pageFaults-2;
+		    //printf("\npageFaults : %d\n", pageFaults-1);
+		    if(fb[(point+1) % frames].bit == 0){
+			point++;
+                  	fb[point % frames].temp = referenceString[m];
+		    }
+		    else{
+			    //point = pageFaults-1;
+			    //fb[point].bit = 0;
+			    point++;
+			    //printf("\npoint : %d\n", point);
+			    while(fb[point % frames].bit == 1){
+				    fb[point % frames].bit=0;
+				    point++;
+			 }
+			    fb[point % frames].temp = referenceString[m];
+		    }
+            }
+
+	    printf("%d\t\t",m+1);
+            for(n = 0; n < frames; n++)
+            {
+		  if(fb[n].temp == -1)
+			  printf("%c\t", ' ');
+		  else
+		  	printf("%d(%d)\t", fb[n].temp, fb[n].bit);
+            }
+	    printf("%c\n", fault);
+      }
+	    printf("Number of page faults : %d times\n", pageFaults);
+	    printf("**************************************************\n");
+
+	return 0;
 }
 
 int lru_page(int frames, int pages, int *referenceString){
@@ -263,6 +361,7 @@ int main()
       opti_page(frames, pages, referenceString);
       fifo_page(frames, pages, referenceString);
       lru_page(frames, pages, referenceString);
+      second_chance_page(frames, pages, referenceString);
 
       return 0;
 }
