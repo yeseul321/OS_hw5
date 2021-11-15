@@ -25,7 +25,6 @@ int lru_page(int frames, int pages, int *referenceString){
 	int pageFaults = 0, m, n, s;
 	char fault;
 
-	//printf("frames : %d, pages : %d\n", frames, pages);
 	printf("Used method : LRU\n");
 	printf("page reference string : ");
 	for(int m = 0; m < pages; m++)
@@ -65,7 +64,6 @@ int lru_page(int frames, int pages, int *referenceString){
             }
             else if(s == 0)
             {
-                  //temp[(pageFaults - 1) % frames] = referenceString[m];
 		  if(frame[0]<=frame[1]){
 			  if(frame[0]<=frame[2]){
 				  temp[0] = referenceString[m];
@@ -92,7 +90,6 @@ int lru_page(int frames, int pages, int *referenceString){
 	    printf("%d\t\t",m+1);
             for(n = 0; n < frames; n++)
             {
-                  //printf("%d\t\t",n+1);
 		  if(temp[n] == -1)
 			  printf("%c\t", ' ');
 		  else
@@ -186,7 +183,6 @@ int opti_page(int frames, int pages, int *referenceString){
 	    printf("%d\t\t",m+1);
             for(n = 0; n < frames; n++)
             {
-                  //printf("%d\t\t",n+1);
 		  if(temp[n] == -1)
 			  printf("%c\t", ' ');
 		  else
@@ -204,7 +200,6 @@ int fifo_page(int frames, int pages, int *referenceString){
 	int pageFaults = 0, m, n, s;
 	char fault;
 
-	//printf("frames : %d, pages : %d\n", frames, pages);
 	printf("Used method : FIFO\n");
 	printf("page reference string : ");
 	for(int m = 0; m < pages; m++)
@@ -248,7 +243,6 @@ int fifo_page(int frames, int pages, int *referenceString){
 	    printf("%d\t\t",m+1);
             for(n = 0; n < frames; n++)
             {
-                  //printf("%d\t\t",n+1);
 		  if(temp[n] == -1)
 			  printf("%c\t", ' ');
 		  else
@@ -266,14 +260,10 @@ int main()
 
       readInput(&frames, &pages, referenceString);
 
-      //for(int m = 0; m < pages; m++)
-      //{
-      //     printf("%d ", referenceString[m]);
-      //}
-
       opti_page(frames, pages, referenceString);
       fifo_page(frames, pages, referenceString);
       lru_page(frames, pages, referenceString);
+
       return 0;
 }
 
