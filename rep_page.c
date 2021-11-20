@@ -263,29 +263,9 @@ int opti_page(int frames, int pages, int *referenceString){
 			if(frame[a] == 0) frame[a] = pages;
 		    }
 		   
-		    //if(frame[0]<frame[1]){
-		//	    if(frame[1]<frame[2]){
-		//		    temp[2] = referenceString[m];
-		//		    frame[2] = 0;
-		//	    }
-		//	    else{
-		//		    temp[1] = referenceString[m];
-		//		    frame[1] = 0;
-		//	    }
-		  //  }
-		  //  else {
-		//	    if(frame[0]<frame[2]){
-		//		    temp[2] = referenceString[m];
-		//		    frame[2] = 0;
-		//	    }
-		//	    else{
-		//	    	temp[0] = referenceString[m];
-		//		frame[0] = 0;
-		//	    }
-		  //  }
 		 big = opti_biggest(frame, frames);
-                        temp[big] = referenceString[m];
-                        frame[big] = m;
+                 temp[big] = referenceString[m];
+                 frame[big] = m;
 
 	    }
 
