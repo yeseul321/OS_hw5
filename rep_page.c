@@ -7,6 +7,20 @@ struct frame_bit {
 	int bit : 2;
 };
 
+int oldest_frame(int *frame, int size){
+	int old = 0;
+	int min = frame[0];
+
+	for(int i = 0;i<size; i++){
+		if(frame[i] < min){
+			min = frame[i];
+			old = i;
+		}
+	}
+
+	return old;
+}
+
 //reading the input.txt file
 void readInput(int *frames, int *pages, int *referenceString){
 	char ch;
@@ -83,16 +97,12 @@ int second_chance_page(int frames, int pages, int *referenceString){
             else if(s == 0)
             {
 		    if(point == 0) point = pageFaults-2;
-		    //printf("\npageFaults : %d\n", pageFaults-1);
 		    if(fb[(point+1) % frames].bit == 0){
 			point++;
                   	fb[point % frames].temp = referenceString[m];
 		    }
 		    else{
-			    //point = pageFaults-1;
-			    //fb[point].bit = 0;
 			    point++;
-			    //printf("\npoint : %d\n", point);
 			    while(fb[point % frames].bit == 1){
 				    fb[point % frames].bit=0;
 				    point++;
@@ -107,7 +117,7 @@ int second_chance_page(int frames, int pages, int *referenceString){
 		  if(fb[n].temp == -1)
 			  printf("%c\t", ' ');
 		  else
-		  	printf("%d(%d)\t", fb[n].temp, fb[n].bit);
+		  	printf("%d\t", fb[n].temp);
             }
 	    printf("%c\n", fault);
       }
@@ -122,6 +132,7 @@ int lru_page(int frames, int pages, int *referenceString){
 	int frame[frames];
 	int pageFaults = 0, m, n, s;
 	char fault;
+	int old = 0;
 
 	printf("Used method : LRU\n");
 	printf("page reference string : ");
@@ -162,26 +173,10 @@ int lru_page(int frames, int pages, int *referenceString){
             }
             else if(s == 0)
             {
-		  if(frame[0]<=frame[1]){
-			  if(frame[0]<=frame[2]){
-				  temp[0] = referenceString[m];
-				  frame[0] = m;
-			  }
-			  else{
-				  temp[2] = referenceString[m];
-				  frame[2] = m;
-			  }
-		  } 
-		  else{
-			  if(frame[1]<=frame[2]){
-				  temp[1] = referenceString[m];
-				  frame[1] = m;
-			  }
-			  else{
-				  temp[2] = referenceString[m];
-				  frame[2] = m;
-			  }
-		  }
+			old = oldest_frame(frame, frames);
+			temp[old] = referenceString[m];
+			frame[old] = m;
+		  
 
             }
 
