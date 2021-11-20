@@ -20,6 +20,17 @@ int oldest_frame(int *frame, int size){
 
 	return old;
 }
+int opti_biggest(int *frame, int frame_size){
+	int big = 0;
+	int max = frame[0];
+
+	for(int i = 0; i<frame_size;i++){
+		if(frame[i]>max){
+			max = frame[i];
+			big = i;
+		}
+	}return big;
+}
 
 //reading the input.txt file
 void readInput(int *frames, int *pages, int *referenceString){
@@ -200,6 +211,7 @@ int opti_page(int frames, int pages, int *referenceString){
 	int temp[frames];
 	int frame[frames];
 	int pageFaults = 0, m, n, s;
+	int big = 0;
 	char fault;
 
 	printf("Used method : OPT\n");
@@ -251,26 +263,30 @@ int opti_page(int frames, int pages, int *referenceString){
 			if(frame[a] == 0) frame[a] = pages;
 		    }
 		   
-		    if(frame[0]<frame[1]){
-			    if(frame[1]<frame[2]){
-				    temp[2] = referenceString[m];
-				    frame[2] = 0;
-			    }
-			    else{
-				    temp[1] = referenceString[m];
-				    frame[1] = 0;
-			    }
-		    }
-		    else {
-			    if(frame[0]<frame[2]){
-				    temp[2] = referenceString[m];
-				    frame[2] = 0;
-			    }
-			    else{
-			    	temp[0] = referenceString[m];
-				frame[0] = 0;
-			    }
-		    }
+		    //if(frame[0]<frame[1]){
+		//	    if(frame[1]<frame[2]){
+		//		    temp[2] = referenceString[m];
+		//		    frame[2] = 0;
+		//	    }
+		//	    else{
+		//		    temp[1] = referenceString[m];
+		//		    frame[1] = 0;
+		//	    }
+		  //  }
+		  //  else {
+		//	    if(frame[0]<frame[2]){
+		//		    temp[2] = referenceString[m];
+		//		    frame[2] = 0;
+		//	    }
+		//	    else{
+		//	    	temp[0] = referenceString[m];
+		//		frame[0] = 0;
+		//	    }
+		  //  }
+		 big = opti_biggest(frame, frames);
+                        temp[big] = referenceString[m];
+                        frame[big] = m;
+
 	    }
 
 	    printf("%d\t\t",m+1);
